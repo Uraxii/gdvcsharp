@@ -1,42 +1,35 @@
-version: '3.8'
-
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: gdvcsharp-mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    environment:
-      MONGO_INITDB_DATABASE: MongoDB
-
-  mongo-express:
-    image: mongo-express:latest
-    container_name: gdvcsharp-mongo-ui
-    restart: always
-    ports:
-      - "8081:8081"  # Expose Mongo Express UI on localhost:8081
-    depends_on:
-      - mongodb
-    environment:
-      ME_CONFIG_MONGODB_SERVER: gdvcsharp-mongo
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_BASICAUTH_USERNAME: admin  # Change for security
-      ME_CONFIG_BASICAUTH_PASSWORD: admin  # Change for security
-
   gdvcsharp-api:
-    build: ./api/
-    container_name: gdvcsharp-api
-    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5001:5001"
-    depends_on:
-      - mongodb
+      - "5000:80"
     environment:
-      MONGO_CONNECTION_STRING: "mongodb://gdvcsharp-mongo:27017"
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    volumes:
+      - ./app/uploads:/app/uploads
+    networks:
+      - vulnerable-network
+    labels:
+      - "description=GDVCSharp Vulnerable Web API for security training"
+      - "warning=Contains intentional security vulnerabilities"
+
+  # Optional: Add a simple web server to demonstrate SSRF
+  target-server:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    networks:
+      - vulnerable-network
+    environment:
+      - NGINX_HOST=target-server
+      - NGINX_PORT=80
+
+networks:
+  vulnerable-network:
+    driver: bridge
 
 volumes:
-  mongo_data:
-
+  uploads:
