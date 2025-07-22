@@ -74,34 +74,6 @@ The application demonstrates the following major vulnerability categories:
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Docker](https://www.docker.com/) (optional)
 
-### Running with .NET CLI
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Uraxii/gdvcsharp-api.git
-   cd gdvcsharp-api
-   ```
-
-2. **Navigate to the application directory:**
-   ```bash
-   cd app
-   ```
-
-3. **Restore dependencies:**
-   ```bash
-   dotnet restore
-   ```
-
-4. **Run the application:**
-   ```bash
-   dotnet run
-   ```
-
-5. **Access the application:**
-   - Application: http://localhost:5000
-   - Swagger UI: http://localhost:5000/swagger
-   - Vulnerability list: http://localhost:5000
-
 ### Running with Docker
 
 1. **Clone the repository:**
