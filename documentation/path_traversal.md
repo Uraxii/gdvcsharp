@@ -116,56 +116,6 @@ public IActionResult ListDirectoryVulnerable(string directory = ".")
 }
 ```
 
-#### 3. File Upload with Path Control
-
-```csharp
-[HttpPost("upload/vuln")]
-public async Task<IActionResult> UploadFileVulnerable(IFormFile file, string directory = "uploads")
-{
-    if (file == null || file.Length == 0)
-    {
-        return BadRequest("No file uploaded");
-    }
-
-    try
-    {
-        // VULNERABLE: User can control the upload directory
-        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), directory);
-
-        // Create directory if it doesn't exist (dangerous!)
-        if (!Directory.Exists(uploadPath))
-        {
-            Directory.CreateDirectory(uploadPath);
-        }
-
-        var filePath = Path.Combine(uploadPath, file.FileName);
-
-        // VULNERABLE: No validation of file name or path
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        return Ok(new
-        {
-            message = "File uploaded successfully",
-            filename = file.FileName,
-            path = filePath,
-            directory = directory,
-            vulnerability = "Attacker can upload files to arbitrary directories using '../' in directory parameter"
-        });
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new
-        {
-            error = "Upload failed",
-            details = ex.Message
-        });
-    }
-}
-```
-
 ## How Path Traversal Attacks Work
 
 ### Attack Vectors and Techniques
@@ -229,22 +179,6 @@ curl "http://localhost:5000/api/pathtraversal/list/vuln?directory=../../../var/l
 
 # List user directories
 curl "http://localhost:5000/api/pathtraversal/list/vuln?directory=../../../home"
-```
-
-#### 5. File Upload Attacks
-
-```bash
-# Upload malicious file to system directory
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/vuln?directory=../../../tmp" \
-  -F "file=@malicious.php"
-
-# Upload web shell to web directory
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/vuln?directory=../../../var/www/html" \
-  -F "file=@webshell.php"
-
-# Upload to startup directory
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/vuln?directory=../../../etc/init.d" \
-  -F "file=@backdoor.sh"
 ```
 
 ### Advanced Attack Techniques
@@ -379,7 +313,6 @@ backup.sql           - Database backups
 
 ### Business Impact
 - **Data Breach**: Access to sensitive files and databases
-- **System Compromise**: Upload of malicious files
 - **Credential Theft**: Extraction of passwords and keys
 - **Compliance Violations**: Unauthorized access to regulated data
 - **Service Disruption**: Modification or deletion of critical files
@@ -534,116 +467,6 @@ private bool IsAllowedFileType(string filePath)
     var allowedExtensions = new[] { ".txt", ".json", ".log", ".md", ".csv", ".pdf" };
     var extension = Path.GetExtension(filePath).ToLowerInvariant();
     return allowedExtensions.Contains(extension);
-}
-```
-
-### 3. Secure File Upload
-
-```csharp
-[HttpPost("upload/secure")]
-public async Task<IActionResult> UploadFileSecure(IFormFile file)
-{
-    if (file == null || file.Length == 0)
-        return BadRequest("No file uploaded");
-
-    try
-    {
-        // SECURE: Validate file size
-        const int maxFileSize = 5 * 1024 * 1024; // 5MB
-        if (file.Length > maxFileSize)
-        {
-            return BadRequest($"File size exceeds limit of {maxFileSize / (1024 * 1024)}MB");
-        }
-
-        // SECURE: Validate file extension
-        var allowedExtensions = new[] { ".txt", ".pdf", ".jpg", ".png", ".docx", ".csv" };
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-
-        if (!allowedExtensions.Contains(extension))
-        {
-            return BadRequest($"File type not allowed. Allowed: {string.Join(", ", allowedExtensions)}");
-        }
-
-        // SECURE: Validate original filename
-        if (!IsValidFilename(file.FileName))
-        {
-            return BadRequest("Invalid filename");
-        }
-
-        // SECURE: Generate safe filename to prevent any path issues
-        var safeFileName = $"{Guid.NewGuid()}{extension}";
-        var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "secure");
-
-        // SECURE: Ensure upload directory exists and is within allowed path
-        if (!Directory.Exists(uploadDirectory))
-        {
-            Directory.CreateDirectory(uploadDirectory);
-        }
-
-        var filePath = Path.Combine(uploadDirectory, safeFileName);
-
-        // SECURE: Verify the final path is still within our upload directory
-        var normalizedUploadDir = Path.GetFullPath(uploadDirectory);
-        var normalizedFilePath = Path.GetFullPath(filePath);
-
-        if (!normalizedFilePath.StartsWith(normalizedUploadDir + Path.DirectorySeparatorChar))
-        {
-            _logger.LogError("Upload path validation failed: {FilePath}", normalizedFilePath);
-            return StatusCode(500, "Upload path validation failed");
-        }
-
-        // SECURE: Scan file content for malicious patterns
-        using (var stream = file.OpenReadStream())
-        {
-            if (await ContainsMaliciousContent(stream))
-            {
-                _logger.LogWarning("Malicious content detected in upload from IP: {ClientIP}", 
-                    HttpContext.Connection.RemoteIpAddress);
-                return BadRequest("File contains potentially malicious content");
-            }
-        }
-
-        // Save file
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        _logger.LogInformation("File uploaded successfully: {OriginalName} -> {SafeName} from IP: {ClientIP}", 
-            file.FileName, safeFileName, HttpContext.Connection.RemoteIpAddress);
-
-        return Ok(new
-        {
-            message = "File uploaded securely",
-            originalName = file.FileName,
-            storedName = safeFileName,
-            size = file.Length,
-            uploadTime = DateTime.UtcNow,
-            securityNote = "File validated, renamed, and stored in secure directory"
-        });
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Secure upload failed for file: {FileName} from IP: {ClientIP}", 
-            file.FileName, HttpContext.Connection.RemoteIpAddress);
-        return StatusCode(500, "Upload failed");
-    }
-}
-
-private async Task<bool> ContainsMaliciousContent(Stream stream)
-{
-    // Basic malicious content detection
-    var buffer = new byte[1024];
-    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-    var content = Encoding.UTF8.GetString(buffer, 0, bytesRead).ToLowerInvariant();
-
-    var maliciousPatterns = new[]
-    {
-        "<?php", "<script", "eval(", "system(", "exec(", "shell_exec",
-        "passthru", "file_get_contents", "base64_decode"
-    };
-
-    return maliciousPatterns.Any(pattern => content.Contains(pattern));
 }
 ```
 
@@ -808,18 +631,5 @@ curl "http://localhost:5000/api/pathtraversal/secure?filename=file*.txt"
 curl "http://localhost:5000/api/pathtraversal/secure?filename=file<>.txt"
 ```
 
-### Upload Security Tests
-```bash
-# Malicious file upload attempts
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/secure" \
-  -F "file=@webshell.php"
-
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/secure" \
-  -F "file=@malicious.exe"
-
-# File size limit test
-curl -X POST "http://localhost:5000/api/pathtraversal/upload/secure" \
-  -F "file=@largefile.pdf"  # > 5MB
-```
 
 All security tests should return appropriate error messages and log the attempts, demonstrating that the path traversal vulnerability has been effectively mitigated.

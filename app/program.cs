@@ -212,12 +212,6 @@ app.MapGet("/", () => Results.Json(new
             testCommand = "curl \"http://localhost:5000/api/pathtraversal/list/vuln?directory=../../\"",
             description = "Directory listing exposes file system structure"
         },
-        new {
-            name = "Path Traversal - File Upload",
-            endpoint = "POST /api/pathtraversal/upload/vuln",
-            testCommand = "curl -X POST -F \"file=@test.txt\" -F \"directory=../../../tmp\" \"http://localhost:5000/api/pathtraversal/upload/vuln\"",
-            description = "File upload with directory traversal"
-        }
     },
     secureEndpoints = new
     {
@@ -232,10 +226,9 @@ app.MapGet("/", () => Results.Json(new
         {
             secureFileAccess = "GET /api/pathtraversal/solution?filename={filename}",
             secureDirectoryListing = "GET /api/pathtraversal/list/solution",
-            secureFileUpload = "POST /api/pathtraversal/upload/solution"
         }
     },
-    totalVulnerableEndpoints = 23,
+    totalVulnerableEndpoints = 22,
 
     warning = "⚠️ This is a deliberately vulnerable application for educational purposes only!",
     disclaimer = "NEVER deploy this application in production or expose it to untrusted networks!",
