@@ -93,9 +93,6 @@ The application demonstrates the following major vulnerability categories:
 ## API Endpoints
 
 ### Vulnerable Endpoints
-
-The application exposes 23+ vulnerable endpoints across different categories:
-
 - **SSRF**: `/api/ssrf/vulnerable`, `/api/ssrf/post-vulnerable`
 - **Auth Bypass**: `/api/authbypass/admin/*`
 - **ReDoS**: `/api/regex/validate`, `/api/regex/search`
@@ -113,7 +110,7 @@ For comparison, the application also includes secure implementations:
 
 ## Testing the Vulnerabilities
 
-Example payloads can be found at 'https://localhost:5000/'
+Example payloads can be found at http://localhost:5000/
 ```
 
 ## Documentation
