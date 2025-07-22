@@ -113,31 +113,7 @@ For comparison, the application also includes secure implementations:
 
 ## Testing the Vulnerabilities
 
-### Example Attacks
-
-**SSRF Attack:**
-```bash
-curl "http://localhost:5000/api/ssrf/vulnerable?url=http://169.254.169.254/latest/meta-data/"
-```
-
-**Authorization Bypass:**
-```bash
-curl "http://localhost:5000/api/authbypass/admin/dashboard?userId=123&role=admin"
-```
-
-**ReDoS Attack:**
-```bash
-curl "http://localhost:5000/api/regex/validate?input=aaaaaaaaaaaaaaaaaaaaac"
-```
-
-**XSS Attack:**
-```bash
-curl "http://localhost:5000/api/xss/search?query=%3Cscript%3Ealert%28%27XSS%27%29%3C%2Fscript%3E"
-```
-
-**Path Traversal Attack:**
-```bash
-curl "http://localhost:5000/api/pathtraversal/vuln?filename=../../../etc/passwd"
+Example payloads can be found at 'https://localhost:5000/'
 ```
 
 ## Documentation
