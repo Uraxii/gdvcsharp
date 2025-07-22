@@ -40,12 +40,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// VULNERABLE: Exposed swagger docs
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // VULNERABLE: Permissive CORS
 app.UseCors("AllowAll");
