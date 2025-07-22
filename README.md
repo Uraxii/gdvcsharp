@@ -1,4 +1,4 @@
-# GDV C# Application (API)
+# Gosh Dang Vulnerable C# Application
 ![Build Status](https://github.com/Uraxii/gdvcsharp-api/actions/workflows/ubuntu-build.yml/badge.svg)
 
 ## ⚠️ Security Warning
