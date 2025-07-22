@@ -113,7 +113,7 @@ app.MapGet("/", () => Results.Json(new
         new {
             name = "Regular Expression Denial of Service (ReDoS)",
             endpoint = "GET /api/regex/validate?input={input}",
-            testCommand = "curl \"http://localhost:5000/api/regex/validate?input=aaaaaaaaaaaaaaaaaaaaac\"",
+            testCommand = "curl \"http://localhost:5000/api/regex/validate?input=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac\"",
             description = "Catastrophic backtracking in regex patterns"
         },
         new {
