@@ -73,8 +73,8 @@ The application demonstrates the following major vulnerability categories:
 ### Running with .NET CLI
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Uraxii/gdvcsharp-api.git
-   cd gdvcsharp-api
+   git clone https://github.com/Uraxii/gdvcsharp.git
+   cd gdvcsharp
    ```
 
 2. **Navigate to the application directory:**
@@ -100,8 +100,8 @@ The application demonstrates the following major vulnerability categories:
 ### Running with Docker
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Uraxii/gdvcsharp-api.git
-   cd gdvcsharp-api
+   git clone https://github.com/Uraxii/gdvcsharp.git
+   cd gdvcsharp
    ```
 
 2. **Build and run with Docker Compose:**
