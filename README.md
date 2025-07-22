@@ -70,15 +70,38 @@ The application demonstrates the following major vulnerability categories:
 
 ## Quick Start
 
-### Prerequisites
-- [Docker](https://www.docker.com/)
-
-### Running with Docker
-
+### Running with .NET CLI
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Uraxii/gdvcsharp.git
-   cd gdvcsharp
+   git clone https://github.com/Uraxii/gdvcsharp-api.git
+   cd gdvcsharp-api
+   ```
+
+2. **Navigate to the application directory:**
+   ```bash
+   cd app
+   ```
+
+3. **Restore dependencies:**
+   ```bash
+   dotnet restore
+   ```
+
+4. **Run the application:**
+   ```bash
+   dotnet run
+   ```
+
+5. **Access the application:**
+   - Application: http://localhost:5000
+   - Swagger UI: http://localhost:5000/swagger
+   - Vulnerability list: http://localhost:5000
+
+### Running with Docker
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Uraxii/gdvcsharp-api.git
+   cd gdvcsharp-api
    ```
 
 2. **Build and run with Docker Compose:**
@@ -101,7 +124,6 @@ The application demonstrates the following major vulnerability categories:
 - **Path Traversal**: `/api/pathtraversal/vuln`, `/api/pathtraversal/list/vuln`
 
 ### Secure Endpoints
-
 For comparison, the application also includes secure implementations:
 
 - **Secure Path Traversal**: `/api/pathtraversal/solution`
