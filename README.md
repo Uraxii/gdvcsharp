@@ -111,7 +111,6 @@ For comparison, the application also includes secure implementations:
 ## Testing the Vulnerabilities
 
 Example payloads can be found at http://localhost:5000/
-```
 
 ## Documentation
 
