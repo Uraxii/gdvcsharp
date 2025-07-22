@@ -223,6 +223,10 @@ public IActionResult CreateAdminUserSecure([FromBody] UserRequest request)
 ### 2. Server-Side Role Verification
 
 ```csharp
+using Microsoft.AspNetCore.Authorization;
+
+// ...
+
 [HttpGet("admin/dashboard")]
 public IActionResult AdminDashboardSecure()
 {
@@ -232,11 +236,15 @@ public IActionResult AdminDashboardSecure()
     if (string.IsNullOrEmpty(userId))
         return Unauthorized("Authentication required");
 
-    // Verify role from database, NOT user input
+    /*
+    Verify role from database, NOT user input.
+    The code might look like...
+
     var userRole = _userService.GetUserRole(userId);
-    
+
     if (userRole != UserRole.Admin)
         return Forbid("Admin access required");
+    */
 
     // Get admin data without exposing secrets
     var dashboardData = _adminService.GetDashboardData();
