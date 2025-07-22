@@ -71,8 +71,7 @@ The application demonstrates the following major vulnerability categories:
 ## Quick Start
 
 ### Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Docker](https://www.docker.com/) (optional)
+- [Docker](https://www.docker.com/)
 
 ### Running with Docker
 
