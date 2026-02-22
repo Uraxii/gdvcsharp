@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-Direct Python conversion of the bash ReDoS attack script
-"""
 
 import subprocess
 import time
