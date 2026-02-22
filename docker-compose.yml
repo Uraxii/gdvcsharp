@@ -16,7 +16,6 @@ services:
       - "description=GDVCSharp Vulnerable Web API for security training"
       - "warning=Contains intentional security vulnerabilities"
 
-  # Optional: Add a simple web server to demonstrate SSRF
   target-server:
     image: nginx:alpine
     ports:
